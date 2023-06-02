@@ -42,13 +42,15 @@ class MinhaWidget extends StatelessWidget {
               labelText: 'Peso (kg)',
             ),
             onChanged: (value) {
-              final peso = double.tryParse(value);
-          if (peso != null) {
-    bloc.calcularImc(peso, bloc.state.altura);
-    }
+              if(value.isNotEmpty) {
+                bloc.novoPeso(double.tryParse(value));
+              } else {
+                bloc.novoPeso(0);
+              }
+              print("---------------------------");
+              print(value);
 
-
-            },
+              },
           ),
         ),
 
@@ -60,28 +62,24 @@ class MinhaWidget extends StatelessWidget {
               labelText: 'Altura (metros)',
             ),
             onChanged: (value) {
-              // Atualizar a altura no BLoC quando o valor do TextField mudar
-              final altura = double.tryParse(value);
-              if (altura != null) {
-                print(bloc.state.peso);
-                bloc.calcularImc(bloc.state.peso, altura);
-              }
+              bloc.novoAltura(double.tryParse(value));
+
             },
           ),
         ),
 
+
         ElevatedButton(
           onPressed: () {
-            // Calcular o IMC quando o botão for pressionado
-            print("Peso" + bloc.state.peso.toString());
-            print("Altura" + bloc.state.altura.toString());
-            bloc.calcularImc(bloc.state.peso!, bloc.state.altura!);
+            bloc.calcularImc();
+            print("-------------------------------");
+            print(bloc.state.peso);
           },
           style: ElevatedButton.styleFrom(
-            primary: Colors.red, // Definindo a cor vermelha
+            primary: Colors.red,
           ),
           child: Text(
-            'Informações deste IMC',
+            'Calcular IMC',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -99,6 +97,8 @@ class MinhaWidget extends StatelessWidget {
             'O IMC é: ${bloc.state.imc.toStringAsFixed(2)}',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
+          Text(bloc.state.resultado),
+
       ],
     );
   }
